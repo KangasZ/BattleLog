@@ -8,7 +8,7 @@ on:
 env:
   SOLUTION_NAME: BattleLog
   INTERNAL_NAME: BattleLog
-  RELEASE_DIR: ./BattleLog/bin/x64/Release/BattleLog
+  RELEASE_DIR: ./BattleLog/bin/Release/BattleLog
   PERSONAL_PLUGIN_REPO: KangasZ/DalamudPluginRepository
   BRANCH: main
 
