@@ -36,3 +36,7 @@ Please do not include my projects in compilation repositories. This is to ensure
 This is distributed with the MIT license. I take absolutely no responsibility for any actions by the users of this plugin.
 
 The entire plugin is open source, and users are free to look into the code to see what is going on under the hood.
+
+## Credits
+
+The network parsing of this plugin was heavily based on Lemegaton. Paissa Heavy Industry the goat.
