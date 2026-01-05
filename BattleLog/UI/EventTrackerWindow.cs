@@ -155,7 +155,7 @@ public class EventTrackerWindow : IDisposable
         }
         ImGui.BeginTable(
             $"eventtrack",
-            5,
+            7,
             ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg | ImGuiTableFlags.Sortable
         );
         ImGui.TableSetupColumn("NPC Name");
@@ -163,6 +163,8 @@ public class EventTrackerWindow : IDisposable
         ImGui.TableSetupColumn("Cast Name");
         ImGui.TableSetupColumn("Cast Id");
         ImGui.TableSetupColumn("Actions");
+        ImGui.TableSetupColumn("Comment");
+        ImGui.TableSetupColumn("Comment Act");
         ImGui.TableHeadersRow();
         foreach (var structuredCast in eventTracker.actorCastsDict)
         {
@@ -189,14 +191,41 @@ public class EventTrackerWindow : IDisposable
             if (ImGui.Button($"Copy Trigger##{structuredCast.Key}"))
             {
                 var castRegex = $"^20\\|(?:[^|]*\\|){{3}}{castIdStripped}\\|";
+                var commentAddAction = string.IsNullOrWhiteSpace(structuredCast.Value.Comment)
+                    ? ""
+                    : "<Actions>"
+                        + $"<Action OrderNumber=\"1\" SoundRouting=\"None\" TTSRouting=\"None\" UseTTSTextExpression=\"{structuredCast.Value.Comment}\" ActionType=\"UseTTS\">"
+                        + "<Condition Enabled=\"false\" Grouping=\"Or\" />"
+                        + "</Action>"
+                        + "</Actions>";
                 CopyToClipboard(
                     $"<?xml version=\"1.0\"?>"
                         + $"<TriggernometryExport PluginVersion=\"1.2.0.7\">"
                         + $"<ExportedTrigger Enabled=\"true\" Source=\"FFXIVNetwork\" Name=\"{cast} by {name}\" RegularExpression=\"{castRegex}\">"
+                        + commentAddAction
                         + $"<Condition Enabled=\"false\" Grouping=\"Or\" />"
                         + $"</ExportedTrigger>"
                         + $"</TriggernometryExport>"
                 );
+            }
+
+            if (ImGui.BeginPopup($"CMT##{structuredCast.Key}"))
+            {
+                ImGui.InputText($"##{structuredCast}", ref structuredCast.Value.Comment);
+
+                if (ImGui.Button($"Close##{structuredCast}"))
+                {
+                    ImGui.CloseCurrentPopup();
+                }
+                ImGui.EndPopup();
+            }
+
+            ImGui.TableNextColumn();
+            ImGui.Text(structuredCast.Value.Comment);
+            ImGui.TableNextColumn();
+            if (ImGui.Button($"Edit Comment##{structuredCast.Key}"))
+            {
+                ImGui.OpenPopup($"CMT##{structuredCast.Key}");
             }
         }
         ImGui.EndTable();

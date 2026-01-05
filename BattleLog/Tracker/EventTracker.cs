@@ -20,7 +20,14 @@ public class EventTracker
         public ushort Stacks { get; set; }
     }
 
-    public Dictionary<string, (uint NameId, ushort CastId)> actorCastsDict;
+    public class ActorCastEvent()
+    {
+        public uint NameId { get; set; }
+        public ushort CastId { get; set; }
+        public string Comment = string.Empty;
+    }
+
+    public Dictionary<string, ActorCastEvent> actorCastsDict;
     public List<StatusEvent> statusEffects;
     private readonly IPluginLog pluginLog;
     private readonly ExcelNameFinder _excelNameFinder;
@@ -45,10 +52,11 @@ public class EventTracker
         var gameObject = objectTable.FirstOrDefault(x => x.EntityId == sourceId);
         if (gameObject is IBattleNpc battleNpc)
         {
-            this.actorCastsDict[$"{actorCast.actionId}-{battleNpc.NameId}"] = (
-                battleNpc.NameId,
-                actorCast.actionId
-            );
+            if (!actorCastsDict.ContainsKey($"{actorCast.actionId}-{battleNpc.NameId}"))
+            {
+                this.actorCastsDict[$"{actorCast.actionId}-{battleNpc.NameId}"] =
+                    new ActorCastEvent() { NameId = battleNpc.NameId, CastId = actorCast.actionId };
+            }
         }
     }
 
